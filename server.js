@@ -34,12 +34,12 @@ mongoose.connect("mongodb://localhost/scrapeHW", { useNewUrlParser: true });
 // A GET route for scraping the echoJS website
 app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with axios
-  axios.get("http://www.echojs.com/").then(function(response) {
+  axios.get("https://old.reddit.com/r/webdev").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
     // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function(i, element) {
+    $("p.title").each(function(i, element) {
       // Save an empty result object
       var result = {};
 
@@ -80,6 +80,26 @@ app.get("/articles", function(req, res) {
       // If an error occurred, send it to the client
       res.json(err);
     });
+});
+
+app.get("/delete", function(req, res){
+    db.Article.deleteMany({})
+        .then(function(dbArticle){
+            res.json(dbArticle);
+        })
+        .catch(function(err){
+            res.json(err);
+        });
+});
+
+app.get("/save", function(req,res){
+    db.Article.update({ _id: req.params.id },{"$set":{"saved":false}})
+        .then(function(savedArticle){
+            res.json(savedArticle);
+        })
+        .catch(function(err){
+            res.json(err);
+        });
 });
 
 // Route for grabbing a specific Article by id, populate it with it's note
