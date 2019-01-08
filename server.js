@@ -92,7 +92,15 @@ app.get("/delete", function(req, res){
         });
 });
 
-
+app.get("/saved", function(req,res){
+    db.Article.find({saved:true})
+        .then(function(savedPosts){
+            res.json(savedPosts);
+        })
+        .catch(function(err){
+            res.json(err);
+        })
+})
 
 app.patch("/save/:id", function(req,res){
     db.Article.update({_id: req.params.id}, {$set:{saved:true}})
