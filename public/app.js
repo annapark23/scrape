@@ -31,7 +31,9 @@ $.getJSON("/articles", function(data) {
         $("#notes").append("<textarea id='bodyinput' name='body'></textarea>");
         // A button to submit a new note, with the id of the article saved to it
         $("#notes").append("<button data-id='" + data._id + "' id='savenote'>Save Note</button>");
-  
+
+        $("#notes").append("<button data-id='" + data._id + "' id='savearticle'>Save Article</button>");
+
         // If there's a note in the article
         if (data.note) {
           // Place the title of the note in the title input
@@ -70,4 +72,20 @@ $.getJSON("/articles", function(data) {
     $("#titleinput").val("");
     $("#bodyinput").val("");
   });
+
+  $(document).on("click", "#savearticle", function(){
+    var thisId = $(this).attr("data-id");
+
+    $.ajax({
+      method: "PATCH",
+      url:"/save/" + thisId,
+
+      data:{
+        type: true 
+      }
+    })
+    .then(function(data){
+      console.log(data);
+    })
+  })
   

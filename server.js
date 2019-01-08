@@ -49,7 +49,7 @@ app.get("/scrape", function(req, res) {
         .text();
       result.link = $(this)
         .children("a")
-        .attr("href");
+        .attr("href")
 
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
@@ -92,14 +92,16 @@ app.get("/delete", function(req, res){
         });
 });
 
-app.get("/save", function(req,res){
-    db.Article.update({ _id: req.params.id },{"$set":{"saved":false}})
-        .then(function(savedArticle){
-            res.json(savedArticle);
-        })
-        .catch(function(err){
-            res.json(err);
-        });
+
+
+app.patch("/save/:id", function(req,res){
+    db.Article.update({_id: req.params.id}, {$set:{saved:true}})
+    .then(function(savedArticle){
+        res.json(savedArticle);
+    })
+    .catch(function(err){
+        res.json(err);
+    })
 });
 
 // Route for grabbing a specific Article by id, populate it with it's note
